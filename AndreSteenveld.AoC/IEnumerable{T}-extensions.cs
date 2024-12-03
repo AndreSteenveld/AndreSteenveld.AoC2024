@@ -2,6 +2,38 @@ namespace AndreSteenveld.AoC;
 
 public static partial class EnumerableExtensions {
 
+    public static IEnumerable<(T Current, T? Next)> Pair<T>(this IEnumerable<T> source) {
+        using var enumerator = source.GetEnumerator();
+        
+        if(enumerator.MoveNext() is false)
+            yield break;
+        
+        var previous = enumerator.Current;
+        
+        if (enumerator.MoveNext() is false)
+            yield return (previous, default(T?));
+        else 
+            do
+                yield return (previous, previous = enumerator.Current); 
+            while (enumerator.MoveNext());
+    }
+    
+    public static IEnumerable<TResult> Pair<T, TResult>(this IEnumerable<T> source, Func<T, T?, TResult> action) {
+        using var enumerator = source.GetEnumerator();
+        
+        if(enumerator.MoveNext() is false)
+            yield break;
+        
+        var previous = enumerator.Current;
+        
+        if (enumerator.MoveNext() is false)
+            yield return action(previous, default(T?));
+        else 
+            do
+                yield return action(previous, previous = enumerator.Current); 
+            while (enumerator.MoveNext());
+    }
+    
     public static long Product(this IEnumerable<long> source) =>
         source.Aggregate((p, v) => p * v);
 
