@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-using AndreSteenveld.AoC;
-using Microsoft.VisualBasic;
+﻿using AndreSteenveld.AoC;
 
 var lines = Console.In.ReadLines().ToArray();
 
