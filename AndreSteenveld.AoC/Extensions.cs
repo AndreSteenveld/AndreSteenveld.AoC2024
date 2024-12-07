@@ -9,5 +9,10 @@ public static partial class Extensions {
          preserveNewlines
              ? String.Join('\n', lines)
              : String.Concat(lines);
-     
+
+     public static string ReplaceAt(this string @this, int index, char character) {
+         var array = @this.ToCharArray();
+         array[index] = character;
+         return new String(array);
+     }
 }
