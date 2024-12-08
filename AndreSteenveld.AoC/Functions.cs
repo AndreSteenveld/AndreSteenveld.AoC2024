@@ -66,4 +66,7 @@ public static partial class Functions {
     public static int division(int l, int r) => l / r;
     public static int modulus(int l, int r) => l % r;
 
+    public static T addition<T>(T l, T r) where T : IAdditionOperators<T, T, T> => l + r;
+    public static T multiplication<T>(T l, T r) where T : IMultiplyOperators<T, T, T> => l * r;
+
 }

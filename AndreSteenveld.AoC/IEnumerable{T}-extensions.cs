@@ -2,6 +2,40 @@ namespace AndreSteenveld.AoC;
 
 public static partial class EnumerableExtensions {
 
+    public static IEnumerable<IEnumerable<T>> CartesianProduct<T>
+        (this IEnumerable<IEnumerable<T>> enumerables)
+    {
+        IEnumerable<IEnumerable<T>> Seed() { yield return Enumerable.Empty<T>(); }
+
+        return enumerables.Aggregate(Seed(), (accumulator, enumerable)
+            => accumulator.SelectMany(x => enumerable.Select(x.Append)));
+    }
+    
+    public static TAccumulate AggregateWhile<TSource, TAccumulate>(
+        this IEnumerable<TSource> source,
+        TAccumulate seed,
+        Func<TAccumulate, TSource, TAccumulate> func,
+        Func<TAccumulate, bool> predicate)
+    {
+        if (source == null)
+            throw new ArgumentNullException(nameof(source));
+
+        if (func == null)
+            throw new ArgumentNullException(nameof(func));
+
+        if (predicate == null)
+            throw new ArgumentNullException(nameof(predicate));
+
+        var accumulate = seed;
+        foreach (var item in source)
+        {
+            var tmp = func(accumulate, item);
+            if (!predicate(tmp)) break;
+            accumulate = tmp;
+        }
+        return accumulate;
+    }
+    
     public static IEnumerable<(T Current, T? Next)> Pair<T>(this IEnumerable<T> source) {
         using var enumerator = source.GetEnumerator();
         
