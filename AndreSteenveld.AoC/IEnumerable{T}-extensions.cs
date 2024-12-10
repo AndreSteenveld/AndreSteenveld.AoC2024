@@ -80,9 +80,6 @@ public static partial class EnumerableExtensions {
     public static IEnumerable<TTarget> Convert<TSource, TTarget>(this IEnumerable<TSource> source, IFormatProvider? provider = null) where TSource : IConvertible =>
         from element in source select (TTarget)element.ToType(typeof(TTarget), provider);
 
-    public static IEnumerable<(TSource item, int index)> WithIndex<TSource>(this IEnumerable<TSource> source) =>
-        source.Select(ValueTuple.Create<TSource, int>);
-
     public static IEnumerable<TSource> Repeat<TSource>(this IEnumerable<TSource> source){
         while(true)
             foreach(var item in source)

@@ -2,6 +2,13 @@ namespace AndreSteenveld.AoC;
 
 public static partial class ArrayExtensions {
 
+    public static T[] Concat<T>(this T[] l, T[] r) {
+        T[] result = new T[l.Length + r.Length];
+        l.CopyTo(result, 0);
+        r.CopyTo(result, l.Length);
+        return result;
+    }
+    
     public static T[] Copy<T>(this T[] array) {
         var copy = new T[array.Length];
         array.CopyTo(copy, 0);

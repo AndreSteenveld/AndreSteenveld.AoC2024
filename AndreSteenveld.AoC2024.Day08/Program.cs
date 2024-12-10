@@ -1,6 +1,9 @@
-﻿using AndreSteenveld.AoC;
+﻿using System.Diagnostics;
+using AndreSteenveld.AoC;
 
-var map = Console.In.ReadLines().Aggregate((Map)null!, Map.FromInputLines);
+var sw = new Stopwatch() ;; sw.Start();
+
+var map = Console.In.ReadLines().AsMap();
 
 var stations = map.Fields
     .Where( field => Char.IsLetterOrDigit(field.f) )
@@ -14,7 +17,9 @@ var stations = map.Fields
         
         return dictionary;
     });
-    
+
+Console.WriteLine( $"Parsed map [ {map.Width} x {map.Height} ] in {sw.ElapsedMilliseconds}ms ") ;; sw.Restart();
+
 var antinodes = stations.ToDictionary(
         kv => kv.Key,
         kv => Enumerable
@@ -30,7 +35,7 @@ var antinodes = stations.ToDictionary(
 
 var number_of_antinodes = antinodes.SelectMany(kv => kv.Value).Distinct().Count();
 
-Console.WriteLine($"Total number of antinodes :: {number_of_antinodes}");
+Console.WriteLine($"Total number of antinodes [ {sw.ElapsedMilliseconds}ms ] :: {number_of_antinodes}") ;; sw.Restart();
 
 var projected_antinode_lines = stations.ToDictionary(
     kv => kv.Key,
@@ -56,4 +61,4 @@ var projected_antinode_lines = stations.ToDictionary(
 
 var number_of_antinodes_on_line = projected_antinode_lines.SelectMany(kv => kv.Value).Distinct().Count();
 
-Console.WriteLine($"Total number of projected antinode lines :: {number_of_antinodes_on_line}");
+Console.WriteLine($"Total number of projected antinode lines [ {sw.ElapsedMilliseconds}ms ] :: {number_of_antinodes_on_line}");
