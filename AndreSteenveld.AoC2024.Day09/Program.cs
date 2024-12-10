@@ -71,11 +71,10 @@ static class _ {
     public static List<Block> Compact(this List<Block> files, bool fragment = true) {
 
         var moved = new HashSet<int>(files.Count / 2);
-        int data_index = files.Count - 1;
         
         while (true) {
 
-            data_index = fragment
+            var data_index = fragment
                 ? files.FindLastIndex(b => b.Character is not '.')
                 : files.FindLastIndex(b => b.Character is not '.' && moved.Contains((int)b.Id!) is false);
 
