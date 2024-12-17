@@ -32,13 +32,13 @@ public static class MapAndCoordinateExtensions {
         lines.Aggregate(
             new Map<TFieldType>(0, 0, []),
             (map, line) =>
-                map with {
-                    Width = map.Width == 0          ? line.Count
+                new (
+                    Width : map.Width == 0          ? line.Count
                           : map.Width == line.Count ? line.Count
-                    : throw new Exception("Jagged map"),
-                    Height = map.Height + 1,
-                    Area = [..map.Area, ..line]
-                }
+                          : throw new Exception("Jagged map"),
+                    Height : map.Height + 1,
+                    Area : [..map.Area, ..line]
+                )
         );
 
     public static Map<TFieldType> AsMapOf<TFieldType>(this IEnumerable<string> lines, Func<string, ICollection<TFieldType>> converter) where TFieldType : struct =>
@@ -52,9 +52,14 @@ public static class MapAndCoordinateExtensions {
             .AsMapOf();
 }
 
-public record Map<TFieldType>(int Width, int Height, TFieldType[] Area) : Map<TFieldType>.FieldIndexer, IEnumerable<(int x, int y, TFieldType f)> where TFieldType : struct {
+public class Map<TFieldType>(int Width, int Height, TFieldType[] Area) : Map<TFieldType>.FieldIndexer, IEnumerable<(int x, int y, TFieldType f)> where TFieldType : struct {
+
+    public int Width { get; init; } = Width;
+    public int Height { get; init; } = Height;
+    public TFieldType[] Area { get; init; } = Area;
+    
     public interface FieldIndexer {
-        (int x, int y, TFieldType)? this[int x, int y] { get; }
+        (int x, int y, TFieldType f)? this[int x, int y] { get; }
     }
     
     public bool WithinBounds((int x, int y) c) => WithinBounds(c.x, c.y);
@@ -62,13 +67,16 @@ public record Map<TFieldType>(int Width, int Height, TFieldType[] Area) : Map<TF
                                               y >= 0 && y < Height;
 
     public int ToIndex(int x, int y) => (x + (y * Width));
-    public (int x, int y) ToCoordinate(int i) => (i % Width, i / Height);
+    public int ToIndex((int x, int y) coordinate) => ToIndex(coordinate.x, coordinate.y);
+    public (int x, int y) ToCoordinate(int i) => (i % Width, i / Width);
+    public (int x, int y) ToCoordinate(Index i) => ToCoordinate(i.GetOffset(Area.Length));
     
     public TFieldType? this[int i] => i < 0 ? null : i > Area.Length ? null : Area[i];
     public TFieldType? this[int x, int y] => WithinBounds(x, y) ? Area[ToIndex(x, y)] : null;
+    public TFieldType? this[(int x, int y) coordinate] => WithinBounds(coordinate.x, coordinate.y) ? Area[ToIndex(coordinate.x, coordinate.y)] : null;
 
     public FieldIndexer Field => this;
-    (int x, int y, TFieldType)? FieldIndexer.this[int x, int y] => WithinBounds(x, y) ? (x, y, Area[ToIndex(x, y)]) : null;
+    (int x, int y, TFieldType f)? FieldIndexer.this[int x, int y] => WithinBounds(x, y) ? (x, y, Area[ToIndex(x, y)]!) : null;
     
     public IEnumerable<(int x, int y, TFieldType f)> Fields => this;
     
@@ -82,12 +90,19 @@ public record Map<TFieldType>(int Width, int Height, TFieldType[] Area) : Map<TF
     IEnumerator IEnumerable.GetEnumerator() {
         return ((IEnumerable<(int, int, int)>)this).GetEnumerator();
     }
-
-    public override string ToString() => String.Join("\n", Area.Chunk(Width).Select(line => String.Concat(line)));
+    
+    public override string ToString() {
+    
+        var lines = Area
+            .Chunk(Width)
+            .Select( l => String.Concat(l));
+    
+        return String.Join('\n', lines);
+    }
 
 }
 
-public record Map(int Width, int Height, string Area) : Map<char>(Width, Height, Area.ToCharArray()) {
+public class Map(int Width, int Height, string Area) : Map<char>(Width, Height, Area.ToCharArray()) {
 
     private string? area = Area;
     public new string Area => area ??= new(base.Area);

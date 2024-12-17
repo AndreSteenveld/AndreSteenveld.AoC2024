@@ -50,8 +50,8 @@ public static partial class Functions {
         return values;
     }
 
-    public static void WaitForDebugger(){
-        if(Environment.GetEnvironmentVariable("DOTNET_WAIT_FOR_DEBUGGER") == "1"){
+    public static void WaitForDebugger(bool requireEnvironment = true){
+        if(requireEnvironment is false || requireEnvironment && Environment.GetEnvironmentVariable("DOTNET_WAIT_FOR_DEBUGGER") == "1"){
             Console.WriteLine("Waiting for debugger to attach...");
             
             while(Debugger.IsAttached is false)

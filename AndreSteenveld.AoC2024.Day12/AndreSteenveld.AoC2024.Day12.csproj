@@ -8,4 +8,8 @@
         <RootNamespace>AndreSteenveld.AoC.Day12</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\AndreSteenveld.AoC\AndreSteenveld.AoC.csproj" />
+    </ItemGroup>
+
 </Project>
