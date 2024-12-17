@@ -62,10 +62,14 @@ public static partial class EnumerableExtensions {
         
         if (enumerator.MoveNext() is false)
             yield return action(previous, default(T?));
-        else 
+
+        else {
             do
-                yield return action(previous, previous = enumerator.Current); 
+                yield return action(previous, previous = enumerator.Current);
             while (enumerator.MoveNext());
+            
+            yield return action(previous, default(T?));
+        }
     }
     
     public static long Product(this IEnumerable<long> source) =>

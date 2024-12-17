@@ -5,6 +5,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <RootNamespace>AndreSteenveld.AoC2024.Day01</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
