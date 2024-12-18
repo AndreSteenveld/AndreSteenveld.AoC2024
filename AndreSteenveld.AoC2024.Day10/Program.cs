@@ -4,7 +4,7 @@ using AndreSteenveld.AoC;
 using static AndreSteenveld.AoC.Functions;
 
 using Coordinate = (int x, int y, char level);
-using Map = AndreSteenveld.AoC.Map<char>;
+using Map = AndreSteenveld.AoC.TFieldMap<char>;
 
 var sw = new Stopwatch() ;; sw.Start();
 

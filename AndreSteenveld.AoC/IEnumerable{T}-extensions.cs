@@ -109,6 +109,7 @@ public static partial class EnumerableExtensions {
 
     }
 
+    public static IEnumerable<T> Flatten<T>(this IEnumerable<T> source) where T : IEnumerable<T> => source.SelectMany(i => i);
 
     #region Tuple splatting Select
     public static IEnumerable<TResult> Select<T1, T2, TResult>(this IEnumerable<(T1, T2)> source, Func<T1, T2, TResult> selector)

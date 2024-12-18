@@ -5,7 +5,7 @@ using AndreSteenveld.AoC;
 using static Direction;
 using static AndreSteenveld.AoC.Functions;
 //using static System.Math;
-using Map = AndreSteenveld.AoC.Map<char>;
+using Map = AndreSteenveld.AoC.TFieldMap<char>;
 
 //WaitForDebugger(false);
 
@@ -59,11 +59,11 @@ public enum Direction : byte {
     Ordinal  = 0b1111_0000, IsOrdinal = Ordinal
 }
 
-public class RegionMap : Map<Direction> {
+public class RegionMap : TFieldMap<Direction> {
     
     private RegionMap(int Width, int Height, Direction[] Area) : base(Width, Height, Area){ }
 
-    public static RegionMap From(Map<char> source) {
+    public static RegionMap From(TFieldMap<char> source) {
 
         Direction[] borders = new Direction[source.Width * source.Height];
         
@@ -329,71 +329,6 @@ public record Ring(Line[] Lines, Direction Compass = Direction.AllCardinalDirect
 
     public (Coordinate, Coordinate) Box() => box(Points());
 
-}
-
-public record struct Coordinate(int x, int y) : IComparable<Coordinate> {
-
-    public static IEnumerable<Coordinate> Space(int maxX, int maxY) {
-        for(var y = 0; y < maxY; y++)
-            for(var x = 0; x < maxX; x++)
-                yield return (x, y);
-        
-    }
-    
-    public static Coordinate MinValue => (Int32.MinValue, Int32.MinValue);
-    public static Coordinate MaxValue => (Int32.MaxValue, Int32.MaxValue);
-
-    public static Coordinate operator <<(Coordinate self, Direction d) => self + (Coordinate)d;
-    
-    // public static Coordinate operator +(Coordinate self, Direction d) => self + (Coordinate)d;
-    // public static Coordinate operator -(Coordinate self, Direction d) => self - (Coordinate)d;
-    // public static Coordinate operator *(Coordinate self, Direction d) => self * (Coordinate)d;
-    // public static Coordinate operator /(Coordinate self, Direction d) => self / (Coordinate)d;
-    // public static Coordinate operator %(Coordinate self, Direction d) => self % (Coordinate)d;
-    //
-    // public static Coordinate operator +(Coordinate self, (Direction d, int n) ray) => self + ((Coordinate)ray.d * ray.n);
-    // public static Coordinate operator -(Coordinate self, (Direction d, int n) ray) => self - ((Coordinate)ray.d * ray.n);
-    // public static Coordinate operator *(Coordinate self, (Direction d, int n) ray) => self * ((Coordinate)ray.d * ray.n);
-    // public static Coordinate operator /(Coordinate self, (Direction d, int n) ray) => self / ((Coordinate)ray.d * ray.n);
-    // public static Coordinate operator %(Coordinate self, (Direction d, int n) ray) => self % ((Coordinate)ray.d * ray.n);
-    
-    public static Coordinate operator +(Coordinate self, int n) => new(self.x + n, self.y + n);
-    public static Coordinate operator -(Coordinate self, int n) => new(self.x - n, self.y - n);
-    public static Coordinate operator *(Coordinate self, int n) => new(self.x * n, self.y * n);
-    public static Coordinate operator /(Coordinate self, int n) => new(self.x / n, self.y / n);
-    public static Coordinate operator %(Coordinate self, int n) => new(self.x % n, self.y % n);
-    
-    public static Coordinate operator +(Coordinate left, Coordinate right) => new (left.x + right.x, left.y + right.y);
-    public static Coordinate operator -(Coordinate left, Coordinate right) => new (left.x - right.x, left.y - right.y);
-    public static Coordinate operator *(Coordinate left, Coordinate right) => new (left.x * right.x, left.y * right.y);
-    public static Coordinate operator /(Coordinate left, Coordinate right) => new (left.x / right.x, left.y / right.y);
-    public static Coordinate operator %(Coordinate left, Coordinate right) => new (left.x % right.x, left.y % right.y);
-    
-    public static implicit operator ValueTuple<int, int>(Coordinate self) => (self.x, self.y);
-    public static implicit operator Coordinate((int x, int y) other) => new (other.x, other.y);
-
-    public static explicit operator Coordinate(Direction direction) {
-
-        var (x, y) = (0, 0);
-
-        if (direction.HasFlag(Direction.North)) (x, y) = (x - 0, y - 1);
-        if (direction.HasFlag(Direction.East))  (x, y) = (x + 1, y + 0);
-        if (direction.HasFlag(Direction.South)) (x, y) = (x + 0, y + 1);
-        if (direction.HasFlag(Direction.West))  (x, y) = (x - 1, y - 0);
-       
-        return (x, y);
-        
-    }
-
-    public int CompareTo(Coordinate other) =>
-        (this - other) switch {
-            (0, 0) => 0,
-            (<0,0) => -1,
-            (>0, 0) => 1,
-            ( _, <0) => -1,
-            ( _, >0) => 1,
-        };
-    
 }
 
 public static class _ {
