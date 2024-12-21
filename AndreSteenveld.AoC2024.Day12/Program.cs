@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using AndreSteenveld.AoC;
 
-using static Direction;
+using static AndreSteenveld.AoC.Direction;
 using static AndreSteenveld.AoC.Functions;
 //using static System.Math;
 using Map = AndreSteenveld.AoC.TFieldMap<char>;
@@ -34,30 +34,30 @@ foreach (var field in survey)
 
 return;
 
-[Flags]
-public enum Direction : byte {
-    None = 0b0000_0000, Zero = None, Point = None,
-    
-    North = 0b0000_0001, N = North,
-    South = 0b0000_0010, S = South,
-        
-    East  = 0b0000_0100, E = East,
-    West  = 0b0000_1000, W = West,
-
-    NorthEast = 0b0001_0000, NE = NorthEast,
-    SouthEast = 0b0010_0000, SE = SouthEast,
-
-    SouthWest = 0b0100_0000, SW = SouthWest,
-    NorthWest = 0b1000_0000, NW = NorthWest,
-
-    AllCardinalDirections   = North | East | South | West,
-    AllOrdinalDirections    = NorthEast | SouthEast | SouthWest | NorthWest,
-
-    AllDirections = AllCardinalDirections | AllOrdinalDirections, All = AllDirections,
-
-    Cardinal = 0b0000_1111, IsCardinal = Cardinal,
-    Ordinal  = 0b1111_0000, IsOrdinal = Ordinal
-}
+// [Flags]
+// public enum Direction : byte {
+//     None = 0b0000_0000, Zero = None, Point = None,
+//     
+//     North = 0b0000_0001, N = North,
+//     South = 0b0000_0010, S = South,
+//         
+//     East  = 0b0000_0100, E = East,
+//     West  = 0b0000_1000, W = West,
+//
+//     NorthEast = 0b0001_0000, NE = NorthEast,
+//     SouthEast = 0b0010_0000, SE = SouthEast,
+//
+//     SouthWest = 0b0100_0000, SW = SouthWest,
+//     NorthWest = 0b1000_0000, NW = NorthWest,
+//
+//     AllCardinalDirections   = North | East | South | West,
+//     AllOrdinalDirections    = NorthEast | SouthEast | SouthWest | NorthWest,
+//
+//     AllDirections = AllCardinalDirections | AllOrdinalDirections, All = AllDirections,
+//
+//     Cardinal = 0b0000_1111, IsCardinal = Cardinal,
+//     Ordinal  = 0b1111_0000, IsOrdinal = Ordinal
+// }
 
 public class RegionMap : TFieldMap<Direction> {
     

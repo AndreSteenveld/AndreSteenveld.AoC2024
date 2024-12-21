@@ -79,7 +79,7 @@ public enum Direction : byte {
     Ordinal  = 0b1111_0000, IsOrdinal = Ordinal
 }
 
-public partial record struct Coordinate(int x, int y) : IComparable<Coordinate> {
+public readonly partial record struct Coordinate(int x, int y) : IComparable<Coordinate> {
 
     [GeneratedRegex(@"\D+")]
     private static partial Regex CoordinateRegex();
