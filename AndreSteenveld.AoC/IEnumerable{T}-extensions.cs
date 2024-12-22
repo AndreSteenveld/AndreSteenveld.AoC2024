@@ -52,7 +52,7 @@ public static partial class EnumerableExtensions {
             while (enumerator.MoveNext());
     }
     
-    public static IEnumerable<TResult> Pair<T, TResult>(this IEnumerable<T> source, Func<T, T?, TResult> action) {
+    public static IEnumerable<TResult> Pair<T, TResult>(this IEnumerable<T> source, Func<T, T?, TResult> action, bool full_pairs = false) {
         using var enumerator = source.GetEnumerator();
         
         if(enumerator.MoveNext() is false)
@@ -60,7 +60,7 @@ public static partial class EnumerableExtensions {
         
         var previous = enumerator.Current;
         
-        if (enumerator.MoveNext() is false)
+        if (enumerator.MoveNext() is false && full_pairs is false)
             yield return action(previous, default(T?));
 
         else {
@@ -68,7 +68,8 @@ public static partial class EnumerableExtensions {
                 yield return action(previous, previous = enumerator.Current);
             while (enumerator.MoveNext());
             
-            yield return action(previous, default(T?));
+            if(full_pairs is false)
+                yield return action(previous, default(T?));
         }
     }
     
@@ -151,4 +152,21 @@ public static partial class EnumerableExtensions {
     public static (T1, T2, T3, T4, T5, T6, T7) First<T1, T2, T3, T4, T5, T6, T7>(this IEnumerable<(T1, T2, T3, T4, T5, T6, T7)> source, Func<T1, T2, T3, T4, T5, T6, T7, bool> predicate) => 
         source.First( t => predicate(t.Item1, t.Item2, t.Item3, t.Item4, t.Item5, t.Item6, t.Item7) );
     #endregion
+
+    #region Tuple splatting Aggregate(s, a)
+    public static (T1, T2) Aggregate<T1, T2, TSource>(this IEnumerable<TSource> source, (T1, T2) seed, Func<T1, T2, TSource, (T1, T2)> aggregator) =>
+        source.Aggregate(seed, (tuple, item) => aggregator(tuple.Item1, tuple.Item2, item));
+    #endregion
+
+    #region Tuple splatting Aggregate(s, a, r)
+
+    public static TResult Aggregate<T1, T2, TSource, TResult>(this IEnumerable<TSource> source, (T1, T2) seed, Func<T1, T2, TSource, (T1, T2)> aggregator, Func<T1, T2, TResult> result) =>
+        source.Aggregate(
+            seed,
+            (tuple, item) => aggregator(tuple.Item1, tuple.Item2, item),
+            tuple => result(tuple.Item1, tuple.Item2)
+        );
+
+    #endregion
+
 }

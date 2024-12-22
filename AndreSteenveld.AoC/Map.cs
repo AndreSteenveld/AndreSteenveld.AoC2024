@@ -171,6 +171,11 @@ public interface IHasBounds {
                                               y >= 0 && y < Height;
 }
 
+public static class HasBoundsMethods {
+    public static bool WithinBounds(this IHasBounds @this, Coordinate c) => @this.WithinBounds(c);
+    public static bool WithinBounds(this IHasBounds @this, int x, int y) => @this.WithinBounds(x, y);
+}
+
 public interface IFieldEnumerable<TFieldType> : IPointIndex<TFieldType>, IHasBounds, IEnumerable<(int x, int y, TFieldType f)> where TFieldType : struct {
     IEnumerator<(int x, int y, TFieldType f)> IEnumerable<(int x, int y, TFieldType f)>.GetEnumerator() {
         foreach (var (x, y) in Coordinate.Space(Width, Height)) {
